@@ -1,0 +1,65 @@
+colorscheme vividchalk
+set cursorline
+filetype plugin indent on
+let g:ctrlp_lazy_update = 100 "Only refreshes the results every 100ms so if you type fast searches don't pile up
+let g:ctrlp_user_command = 'find %s -type f | egrep -iv "(\.(eot|gif|gz|ico|jpg|jpeg|otf|png|psd|pyc|svg|ttf|woff|zip)$)|(/\.)|((^|\/)tmp\/)"' "Quicker indexing
+map <C-n> :NERDTreeToggle<CR>
+set autoindent
+
+"Copy from visual mode to clipboard
+vmap <C-x> :!pbcopy<CR>
+vmap <C-c> :w !pbcopy<CR><CR>
+
+au BufNewFile,BufRead *.hql set filetype=hive expandtab
+
+" The below sets it so that overwriting something in visual mode from a register won't rewrite it
+function! RestoreRegister()
+  let @" = s:restore_reg
+  return ''
+endfunction
+function! s:Repl()
+    let s:restore_reg = @"
+    return "p@=RestoreRegister()\<cr>"
+endfunction
+
+" NB: this supports "rp that replaces the selection by the contents of @r
+vnoremap <silent> <expr> p <sid>Repl()
+
+"sets it so that current line is always line 0. leader-n to toggle
+set relativenumber
+function! NumberToggle()
+  if(&relativenumber == 1)
+    set number
+  else
+    set relativenumber
+  endif
+endfunc
+nnoremap <leader>n :call NumberToggle()<cr>
+
+"enter to use easymotion
+map <cr> <Plug>(easymotion-bd-w)
+
+"leader-n to open file in nerdtree
+map <leader>n :NERDTreeFind<cr>
+
+"leader-l to move vim view to the right 30 characters
+map <leader>l 30zl
+
+"leader-p to toggle paste mode
+set pastetoggle=<leader>p
+
+"arrow keys to resize vim panes
+nnoremap <Left> :vertical resize -5<cr>
+nnoremap <Right> :vertical resize +5<cr>
+nnoremap <Up> :resize +5<cr>
+nnoremap <Down> :resize -5<cr>
+
+"ctrl-hjkl to move between vim panes
+nnoremap <C-h> <C-w>h
+nnoremap <C-l> <C-w>l
+nnoremap <C-j> <C-w>j
+nnoremap <C-k> <C-w>k
+
+"ctrl-u and ctrl-d to move the page up or down by 5 lines
+nnoremap <C-u> 5<C-Y>M
+nnoremap <C-d> 5<C-E>M
